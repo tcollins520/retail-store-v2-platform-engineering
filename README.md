@@ -1,94 +1,182 @@
-# 🛍️ Retail Store v2 - Production Platform Engineering on AWS
+# 🛍️ Retail Store v2 – Production Platform Engineering on AWS
 
-Retail Store v2 is a production-grade cloud-native microservices platform built on Amazon EKS following modern Platform Engineering and GitOps best practices.
+Retail Store v2 is a production-grade cloud-native microservices platform built on Amazon EKS to demonstrate modern Platform Engineering practices.
+
+The platform is intentionally developed in progressive milestones, evolving from containerized microservices to a fully observable, GitOps-driven Kubernetes platform implementing production-grade security, scalability, progressive delivery, and cloud-native operational practices.
 
 ---
+
+# Engineering Philosophy
+
+Retail Store v2 is intentionally built incrementally to simulate how a real production platform evolves.
+
+Rather than introducing every technology at once, each milestone focuses on mastering a specific layer of the platform—from containerization and Kubernetes fundamentals to Helm, GitOps, progressive delivery, observability, and production operations.
+
+The goal is not simply to deploy software, but to understand the architectural decisions, operational trade-offs, and production best practices behind every implementation.
+
+---
+
+# Project Goals
+
+- Build a production-ready Kubernetes platform on AWS
+- Demonstrate modern Platform Engineering practices
+- Implement Infrastructure as Code using Terraform
+- Deploy workloads to Amazon EKS
+- Adopt GitOps with ArgoCD
+- Implement Progressive Delivery using Argo Rollouts
+- Secure workloads with AWS Pod Identity
+- Integrate AWS Secrets Manager
+- Build production-ready Helm charts
+- Centralize observability using OpenTelemetry
+- Automate deployments using GitHub Actions
+
+---
+
 # Microservices
 
 The application consists of five independently deployable microservices.
 
-The architecture follows a polyglot microservices approach where each service owns its own datastore, allowing independent scaling, deployment, and lifecycle management.
+The platform follows a polyglot microservices architecture where each service owns its own datastore, enabling independent deployment, scaling, and lifecycle management.
 
-| Service             | Language/Framework | Purpose                           | AWS Backend                        |
-| ------------------- | ------------------ | --------------------------------- | ---------------------------------- |
-| 🌐 **UI**           | Spring Boot        | Customer-facing retail storefront | —                                  |
-| 📦 **Catalog**      | Go                 | Product catalog and inventory     | Amazon RDS MySQL                   |
-| 🛒 **Carts**        | Spring Boot        | Shopping cart management          | Amazon DynamoDB                    |
-| 💳 **Checkout**     | Node.js            | Checkout workflow                 | Amazon ElastiCache Redis           |
-| 📑 **Orders**       | Spring Boot        | Order processing and fulfillment  | Amazon RDS PostgreSQL + Amazon SQS |
+| Service | Language | Purpose | AWS Backend |
+|----------|----------|----------|-------------|
+| 🌐 UI | Spring Boot | Customer-facing storefront | — |
+| 📦 Catalog | Go | Product catalog | Amazon RDS MySQL |
+| 🛒 Carts | Spring Boot | Shopping cart management | Amazon DynamoDB |
+| 💳 Checkout | Node.js | Checkout workflow | Amazon ElastiCache Redis |
+| 📑 Orders | Spring Boot | Order processing | Amazon RDS PostgreSQL + Amazon SQS |
+
+---
 
 # Repository Structure
 
 ```text
-retail-store-v2-platform/
+retail-store-v2-platform-engineering/
+
+├── applications/             # Retail Store application source code
+│   ├── ui/                   # Spring Boot UI
+│   ├── catalog/              # Go Catalog Service
+│   ├── cart/                 # Spring Boot Cart Service
+│   ├── checkout/             # Node.js Checkout Service
+│   ├── orders/               # Spring Boot Orders Service
+│   ├── load-generator/       # Load testing
+│   ├── e2e/                  # End-to-end testing
+│   ├── misc/                 # Supporting application resources
+│   └── docker-compose.yaml   # Local development environment
 │
-├── applications/
+├── terraform/                # Infrastructure as Code 
+│   ├── bootstrap/
+│   ├── modules/
+│   └── environments/
+│
+├── kubernetes/               # Kubernetes raw manifests
+│   ├── namespaces/
 │   ├── ui/
 │   ├── catalog/
-│   ├── carts/
+│   ├── cart/
 │   ├── checkout/
 │   ├── orders/
+│   └── common/
 │
-├── terraform-backend/
+├── helm/                    # Helm charts
 │
-├── eks-platform/
+├── platform/                # Kubernetes platform components (future)
+│   ├── argocd/
+│   ├── rollouts/
+│   ├── pod-identity/
+│   ├── secrets-store-csi/
+│   ├── karpenter/
+│   ├── aws-load-balancer-controller/
+│   ├── external-dns/
+│   └── cert-manager/
 │
-├── kube-manifests/
+├── networking/              # Ingress, DNS, TLS (future)
 │
-├── helm/
+├── observability/           # Monitoring, Logging & Tracing
+│   ├── adot/
+│   ├── prometheus/
+│   ├── grafana/
+│   ├── cloudwatch/
+│   └── xray/
 │
-├── ingress/
+├── docs/                    # Documentation
+│   ├── architecture/
+│   ├── adr/
+│   ├── diagrams/
+│   └── runbooks/
 │
-├── karpenter_k8s-manifests/
+├── scripts/                 # Platform scripts
 │
-├── observability/
-│
-├── docs/
-├── scripts/
-│
-├── README.md
-└── LICENSE
-└── .github/
+└── .github/                 # Github workflows
 ```
 
-# Architecture
+> **Note:** This repository is built incrementally. Some directories represent the target production architecture and will be introduced as the platform evolves.
 
-```
+---
+
+# Platform Build Roadmap
+
+| Phase | Status |
+|--------|--------|
+| ✅ Containerization | Complete |
+| 🚧 Kubernetes Native Deployments | In Progress |
+| ⏳ Production Hardening | Planned |
+| ⏳ Helm Packaging | Planned |
+| ⏳ GitOps with ArgoCD | Planned |
+| ⏳ Progressive Delivery (Argo Rollouts) | Planned |
+| ⏳ Observability | Planned |
+| ⏳ Autoscaling & Resilience | Planned |
+| ⏳ Production Operations | Planned |
+
+---
+
+# High-Level Architecture
+
+```text
                     GitHub
                        │
+                       ▼
           GitHub Actions CI/CD
                        │
+                       ▼
               Amazon ECR Images
                        │
+                       ▼
+               GitOps Repository
+                       │
+                       ▼
                   ArgoCD GitOps
                        │
+                       ▼
               Amazon EKS Cluster
                        │
- ┌──────────────────────────────────────────────┐
- │                                              │
- │   UI                                         │
- │   Catalog                                    │
- │   Carts                                      │
- │   Orders                                     │
- │   Checkout                                   │
- │   Notification                               │
- │                                              │
- └──────────────────────────────────────────────┘
+      ┌────────────────────────────────┐
+      │                                │
+      │        UI                      │
+      │        Catalog                 │
+      │        Carts                   │
+      │        Checkout                │
+      │        Orders                  │
+      │                                │
+      └────────────────────────────────┘
                        │
          AWS Managed Services
-       ┌──────────────────────────┐
-       │ RDS MySQL                │
-       │ RDS PostgreSQL           │
-       │ DynamoDB                 │
-       │ ElastiCache Redis        │
-       │ Secrets Manager          │
-       └──────────────────────────┘
+      ┌───────────────────────────────┐
+      │ Amazon RDS MySQL              │
+      │ Amazon RDS PostgreSQL         │
+      │ Amazon DynamoDB               │
+      │ Amazon ElastiCache Redis      │
+      │ Amazon SQS                    │
+      │ AWS Secrets Manager           │
+      └───────────────────────────────┘
                        │
-      OpenTelemetry + ADOT Collectors
+             OpenTelemetry + ADOT
                        │
- Amazon Managed Prometheus (AMP)
+                       ▼
+      Amazon Managed Prometheus (AMP)
                        │
- Amazon Managed Grafana (AMG)
+                       ▼
+      Amazon Managed Grafana (AMG)
 ```
 
 ---
@@ -101,10 +189,9 @@ retail-store-v2-platform/
 - Amazon EKS
 - Amazon ECR
 - Amazon RDS
-- DynamoDB
-- ElastiCache Redis
-- Amazon Managed Prometheus
-- Amazon Managed Grafana
+- Amazon DynamoDB
+- Amazon ElastiCache Redis
+- Amazon SQS
 - AWS Secrets Manager
 - AWS IAM
 - AWS Pod Identity
@@ -122,39 +209,41 @@ retail-store-v2-platform/
 
 ---
 
+## Containers
+
+- Docker
+- Multi-stage Docker Builds
+- Amazon ECR
+
+---
+
 ## Kubernetes
 
 - Deployments
 - Services
 - ConfigMaps
-- Secrets
 - ServiceAccounts
 - Pod Identity
+- Security Contexts
+- Resource Requests & Limits
+- Startup Probes
+- Readiness Probes
+- Liveness Probes
 - Horizontal Pod Autoscaler
 - Pod Disruption Budgets
 - Topology Spread Constraints
-- Security Contexts
-- Readiness Probes
-- Startup Probes
-- Liveness Probes
 
 ---
 
-## GitOps
+## GitOps & Progressive Delivery
 
 - Helm
 - ArgoCD
 - Argo Rollouts
 - Canary Deployments
 - Blue/Green Deployments
-
----
-
-## CI/CD
-
-- GitHub Actions
-- Docker
-- Amazon ECR
+- Automated Rollbacks
+- Analysis Templates
 
 ---
 
@@ -164,6 +253,8 @@ retail-store-v2-platform/
 - AWS Distro for OpenTelemetry (ADOT)
 - Amazon Managed Prometheus
 - Amazon Managed Grafana
+- AWS X-Ray
+- CloudWatch Logs
 - Prometheus Metrics
 - Distributed Tracing
 
@@ -172,27 +263,27 @@ retail-store-v2-platform/
 ## Security
 
 - AWS Pod Identity
-- Secrets Store CSI Driver
 - AWS Secrets Manager
-- Read-only Root Filesystem
+- Secrets Store CSI Driver
 - Non-root Containers
-- Linux Capabilities Dropped
+- Read-only Root Filesystem
 - RuntimeDefault Seccomp
+- Dropped Linux Capabilities
 
 ---
 
-# Features
+# Platform Capabilities
 
-- Production-grade EKS Platform
+- Production-grade Amazon EKS Platform
 - Infrastructure as Code with Terraform
-- GitOps with ArgoCD
-- Progressive Delivery using Argo Rollouts
-- Helm-based Kubernetes Deployments
-- Secure Secrets Management
+- GitOps using ArgoCD
+- Progressive Delivery with Argo Rollouts
+- Production-ready Helm Charts
+- Secure Secret Management
 - AWS Pod Identity
 - Horizontal Pod Autoscaling
 - Karpenter Node Autoscaling
-- Application Health Probes
+- Health Probes
 - Pod Disruption Budgets
 - Topology Spread Constraints
 - OpenTelemetry Instrumentation
@@ -202,99 +293,95 @@ retail-store-v2-platform/
 
 ---
 
-# Platform Improvements (v2)
+# Production Improvements
 
-Retail Store v2 modernizes the original project by introducing several production-grade improvements.
+Retail Store v2 is a complete re-architecture of the original Retail Store application using modern Platform Engineering principles and production Kubernetes patterns.
 
-## Security
+### Security
 
-- Read-only root filesystem
-- Non-root containers
+- Non-root Containers
+- Read-only Root Filesystem
 - RuntimeDefault Seccomp
-- Dropped Linux capabilities
+- Dropped Linux Capabilities
 
-## Reliability
+### Reliability
 
 - Startup Probes
 - Readiness Probes
 - Liveness Probes
 - Pod Disruption Budgets
 
-## Scalability
+### Scalability
 
 - Horizontal Pod Autoscaler
 - Karpenter
 - Topology Spread Constraints
 
-## GitOps
+### GitOps
 
 - ArgoCD
-- Declarative deployments
-- Git-driven infrastructure
+- Declarative Deployments
+- Git-driven Operations
 
-## Progressive Delivery
+### Progressive Delivery
 
 - Canary Deployments
 - Blue/Green Deployments
 - Automated Rollbacks
 - Analysis Templates
 
-## Observability
+### Observability
 
 - OpenTelemetry
+- AWS Distro for OpenTelemetry
 - Amazon Managed Prometheus
 - Amazon Managed Grafana
-- Distributed Tracing
-- Centralized Metrics
+- AWS X-Ray
+- CloudWatch Logs
 
 ---
 
 # CI/CD Pipeline
 
-```
+```text
 Developer
-      │
-      ▼
+    │
+    ▼
 GitHub Push
-      │
-      ▼
+    │
+    ▼
 GitHub Actions
-      │
-      ▼
-Docker Build
-      │
-      ▼
-Amazon ECR
-      │
-      ▼
-GitOps Repository
-      │
-      ▼
-ArgoCD Sync
-      │
-      ▼
-Amazon EKS
+    │
+    ├── Build
+    ├── Test
+    ├── Scan
+    └── Push Image
+            │
+            ▼
+      Amazon ECR
+            │
+            ▼
+     GitOps Repository
+            │
+            ▼
+          ArgoCD
+            │
+            ▼
+     Argo Rollouts
+            │
+            ▼
+        Amazon EKS
 ```
 
 ---
 
-# Project Goals
+# Platform Roadmap
 
-- Build a production-ready Kubernetes platform
-- Demonstrate modern GitOps workflows
-- Implement progressive delivery
-- Secure workloads using AWS Pod Identity
-- Centralize observability using OpenTelemetry
-- Automate deployments using GitHub Actions
-- Follow Platform Engineering best practices
-
----
-
-# Future Enhancements
+Future enhancements include:
 
 - Chaos Engineering
 - Kyverno Policies
-- Gatekeeper
+- OPA Gatekeeper
 - Argo Events
 - Crossplane
 - Multi-Cluster GitOps
