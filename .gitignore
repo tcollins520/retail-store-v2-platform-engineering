@@ -1,9 +1,9 @@
 .DS_Store
-*.tfvars
-.terraform
-*.tfstate*
-*.lock.hcl
-*.log
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
 .vscode
 reports
 env
@@ -31,4 +31,4 @@ devenv.local.nix
 .direnv
 
 .pre-commit-config.yaml
-~WRL0436.tmp
+.tmp*
