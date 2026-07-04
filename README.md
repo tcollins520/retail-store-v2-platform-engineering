@@ -33,6 +33,8 @@ retail-store-v2-platform/
 │
 ├── eks-platform/
 │
+├── kube-manifests/
+│
 ├── helm/
 │
 ├── ingress/
