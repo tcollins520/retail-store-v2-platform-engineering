@@ -29,9 +29,15 @@ retail-store-v2-platform/
 │   ├── checkout/
 │   ├── orders/
 │
-├── docker/
+├── terraform-backend/
 │
-├── terraform/
+├── eks-platform/
+│
+├── helm/
+│
+├── ingress/
+│
+├── karpenter_k8s-manifests/
 │
 ├── observability/
 │
