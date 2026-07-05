@@ -64,10 +64,20 @@ retail-store-v2-platform-engineering/
 │   ├── misc/                 # Supporting application resources
 │   └── docker-compose.yaml   # Local development environment
 │
-├── terraform/                # Infrastructure as Code 
-│   ├── bootstrap/
-│   ├── modules/
-│   └── environments/
+│
+terraform/                  # Infrastructure as Code 
+├── backend/
+├── vpc/
+└── environments/
+│  └── production/
+│
+│
+platform/           # eks add-ons
+├── bootstrap/
+│   ├── metrics-server/
+│   ├── pod-identity/
+│   └── ebs-csi-driver/
+│
 │
 ├── kubernetes/               # Kubernetes raw manifests
 │   ├── namespaces/
@@ -78,19 +88,20 @@ retail-store-v2-platform-engineering/
 │   ├── orders/
 │   └── common/
 │
-├── helm/                    # Helm charts
 │
-├── platform/                # Kubernetes platform components (future)
-│   ├── argocd/
-│   ├── rollouts/
-│   ├── pod-identity/
-│   ├── secrets-store-csi/
-│   ├── karpenter/
+├── networking/               # Ingress, DNS, TLS (future)
 │   ├── aws-load-balancer-controller/
-│   ├── external-dns/
-│   └── cert-manager/
+│   ├── cert-manager/
+│   └── external-dns/  
 │
-├── networking/              # Ingress, DNS, TLS (future)
+│
+├── helm/                   # Helm charts
+    ├── ui
+│   ├── catalog
+│   ├── cart
+│   ├── checkout
+│   ├── orders               
+│            
 │
 ├── observability/           # Monitoring, Logging & Tracing
 │   ├── adot/
