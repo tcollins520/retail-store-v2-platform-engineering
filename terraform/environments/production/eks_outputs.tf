@@ -72,4 +72,57 @@ output "to_configure_kubectl" {
   value       = "aws eks --region ${var.aws_region} update-kubeconfig --name ${local.eks_cluster_name}"
 }
 
+# ------------------------------------------------------------------------------
+# Output the EKS Cluster Security Group ID
+#
+# AWS automatically creates this security group when one is not explicitly
+# provided in the cluster configuration.
+# ------------------------------------------------------------------------------
 
+output "eks_cluster_security_group_id" {
+
+  description = "EKS Cluster Security Group ID"
+
+  value = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+
+}
+
+# ------------------------------------------------------------------------------
+# Secrets Manager Secret ARN
+#
+# AWS automatically creates this secret because
+# manage_master_user_password = true
+# ------------------------------------------------------------------------------
+
+output "catalog_mysql_secret_arn" {
+
+  description = "Secrets Manager ARN containing the Catalog MySQL master credentials"
+
+  value = aws_db_instance.catalog_mysql.master_user_secret[0].secret_arn
+
+}
+
+# ------------------------------------------------------------------------------
+# Catalog MySQL Endpoint
+# ------------------------------------------------------------------------------
+
+output "catalog_mysql_endpoint" {
+
+  description = "Endpoint of the Catalog MySQL RDS instance"
+
+  value = aws_db_instance.catalog_mysql.endpoint
+
+}
+
+
+# ------------------------------------------------------------------------------
+# Catalog MySQL Database Name
+# ------------------------------------------------------------------------------
+
+output "catalog_mysql_database" {
+
+  description = "Catalog database name"
+
+  value = aws_db_instance.catalog_mysql.db_name
+
+}
