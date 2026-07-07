@@ -10,6 +10,11 @@ variable "environment_name" {
   default     = "prod"
 }
 
+variable "environment" {
+  description = "Short environment name used in AWS resource names"
+  type        = string
+}
+
 variable "business_division" {
   description = "Business division"
   type        = string
