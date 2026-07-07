@@ -33,14 +33,13 @@ data "aws_iam_policy_document" "cart_assume_role" {
 # ------------------------------------------------------------------------------
 # Create the IAM Policy for the Cart microservice
 #
-# This policy grants the Cart microservice permission to access
-# the DynamoDB Items table.
+# Grants the Cart microservice permission to access the DynamoDB Items table
+# and its Global Secondary Indexes.
 # ------------------------------------------------------------------------------
 
 resource "aws_iam_policy" "cart_dynamodb_policy" {
 
-  name = "${var.environment}-cart-dynamodb-policy"
-
+  name        = "${var.environment}-cart-dynamodb-policy"
   description = "Allow the Cart microservice to access the DynamoDB Items table"
 
   policy = jsonencode({
@@ -67,7 +66,12 @@ resource "aws_iam_policy" "cart_dynamodb_policy" {
 
         ]
 
-        Resource = aws_dynamodb_table.items_west2.arn
+        Resource = [
+
+          aws_dynamodb_table.items_west2.arn,
+          "${aws_dynamodb_table.items_west2.arn}/index/*"
+
+        ]
 
       }
 
@@ -127,8 +131,7 @@ resource "aws_iam_role" "cart_pod_identity_role" {
 
 resource "aws_iam_role_policy_attachment" "cart_dynamodb_policy_attachment" {
 
-  role = aws_iam_role.cart_pod_identity_role.name
-
+  role       = aws_iam_role.cart_pod_identity_role.name
   policy_arn = aws_iam_policy.cart_dynamodb_policy.arn
 
 }
