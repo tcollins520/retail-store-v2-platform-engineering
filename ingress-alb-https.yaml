@@ -1,0 +1,38 @@
+# Annotations Reference: https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: retail-https-ingress-alb
+  annotations:
+    # Load Balancer Name
+    alb.ingress.kubernetes.io/load-balancer-name: retail-https-alb
+    # Ingress Core Settings
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    # Health Check Settings
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP 
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness    
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+    ## SSL Settings
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    # First Generate SSL Certificate via AWS Certificate Manager (ACM) for 
+    # "usermgmt.<YOURDOMAIN>.com" and update the ARN below before deploying this Ingress Service
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:788143860357:certificate/a62f7b6f-fff3-4cbc-980e-25dc163237e7
+    # SSL Redirect Setting
+    alb.ingress.kubernetes.io/ssl-redirect: '443'       
+    # External DNS Annotation
+    external-dns.alpha.kubernetes.io/hostname: tinacloud.dev
+spec:
+  ingressClassName: alb 
+  defaultBackend:
+    service:
+      name: ui
+      port:
+        number: 80                  
+      
+
