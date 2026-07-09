@@ -1,0 +1,191 @@
+# ============================================================================
+# ORDERS SERVICE - CUSTOM VALUES 
+# ============================================================================
+ 
+# ----------------------------------------------------------------------------
+# IMAGE CONFIGURATION
+# ----------------------------------------------------------------------------
+replicaCount: 2
+
+image:
+  repository: tcollins520/retail-store-orders
+  pullPolicy: IfNotPresent
+  tag: "1.3.0"
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 80
+  name: orders
+  targetPort: 8080
+
+serviceAccount:
+  create: true
+  name: orders
+
+
+# ----------------------------------------------------------------------------
+# SECURITY
+# ----------------------------------------------------------------------------
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+  seccompProfile:
+    type: RuntimeDefault
+
+  capabilities:
+    drop:
+      - ALL
+podSecurityContext:
+  fsGroup: 1000
+
+# ----------------------------------------------------------------------------
+# HEALTH PROBES
+# ----------------------------------------------------------------------------
+probes:
+  startup:
+    path: /actuator/health/readiness
+
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 10
+    periodSeconds: 5
+
+  liveness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 30
+    periodSeconds: 10
+# ----------------------------------------------------------------------------
+# RESOURCE MANAGEMENT
+# ----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 256m
+    memory: 512Mi
+
+  limits:
+    cpu: 512m
+    memory: 1Gi
+
+# ----------------------------------------------------------------------------
+# CONFIGMAP
+# ----------------------------------------------------------------------------
+configMap:
+  enabled: true
+  name:
+
+# ----------------------------------------------------------------------------
+# APPLICATION CONFIGURATION
+# ---------------------------------------------------------
+app:
+  persistence:
+    provider: postgres
+    database: ordersdb
+    secret:
+      name: orders-db
+
+messaging:
+  provider: sqs
+
+  sqs:
+     topic: prod-orders-queue
+
+# DATABASE CONFIGURATION
+# PostgreSQL RDS Database Endpoint and credentials will be injected via ConfigMap and Secrets
+# --------------------------------------------------------
+database:
+  endpoint: prod-orders-postgresql.cifguuuaskpf.us-east-1.rds.amazonaws.com
+  port: 5432
+  serviceName: orders-postgres
+
+# ----------------------------------------------------------------------------
+# AWS SECRETS MANAGER / CSI DRIVER
+# ----------------------------------------------------------------------------
+secrets:
+  awsRegion: us-east-1
+  secretName: rds!db-f93868c7-6d9c-445d-b38a-572b3900e3a7
+  secretProviderClass: orders-db-secrets
+
+# ----------------------------------------------------------------------------
+# AUTOSCALING - HORIZONTAL POD AUTOSCALER (HPA
+# ----------------------------------------------------------------------------
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 12
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# ----------------------------------------------------------------------------
+# KARPENTER NODE SELECTION
+# ----------------------------------------------------------------------------
+# Schedule pods on Karpenter On-Demand nodes for stability
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+# ----------------------------------------------------------------------------
+# TOPOLOGY SPREAD CONSTRAINTS
+# ----------------------------------------------------------------------------
+# Distribute pods across nodes AND availability zones for high availability
+topologySpreadConstraints:
+  enabled: true
+
+  node:
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+
+  zone:
+    maxSkew: 1
+    whenUnsatisfiable: DoNotSchedule
+
+# ----------------------------------------------------------------------------
+# POD DISRUPTION BUDGET (PDB) 
+# ----------------------------------------------------------------------------
+# Maintain minimum availability during voluntary disruptions (node drains, etc.)
+podDisruptionBudget:
+  enabled: false # set to true to enable Pod Disruption Budget. If enabled, it will ensure that at least 2 pods are always available during voluntary disruptions (like node drains).
+  minAvailable: 2 # At least 2 pods must remain available
+
+
+# ----------------------------------------------------------------------------
+# PROMETHEUS SCRAPING
+# ----------------------------------------------------------------------------
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8095"
+  prometheus.io/path: "/actuator/prometheus"
+
+
+# ----------------------------------------------------------------------------
+# OPENTELEMETRY INSTRUMENTATION
+# ----------------------------------------------------------------------------
+opentelemetry:
+  enabled: true
+
+  instrumentation:
+    name: default-instrumentation
+
+  exporter:
+    endpoint: ""
+
+# ----------------------------------------------------------------------------
+# INGRESS CONFIGURATION
+# ----------------------------------------------------------------------------
+ingress:
+
+  enabled: false
+
+  className: alb
+
+  hostname: shop.tinacloud.dev
+
+  annotations: {}
+  
