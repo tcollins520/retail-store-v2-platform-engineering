@@ -1,0 +1,13 @@
+# ==============================================================================
+# ARGO ROLLOUTS
+# Progressive Delivery Controller Configuration
+# ==============================================================================
+
+controller:
+  replicas: 1
+
+dashboard:
+  enabled: true
+
+  service:
+    type: ClusterIP
