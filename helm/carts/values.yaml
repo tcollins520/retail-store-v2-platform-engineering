@@ -44,15 +44,15 @@ podSecurityContext:
 # ----------------------------------------------------------------------------
 probes:
   startup:
-    path: /health
+    path: /actuator/health
 
   readiness:
-    path: /health
+    path: /actuator/health
     initialDelaySeconds: 10
     periodSeconds: 5
 
   liveness:
-    path: /health
+    path: /actuator/health
     initialDelaySeconds: 30
     periodSeconds: 10
 # ----------------------------------------------------------------------------
@@ -75,16 +75,23 @@ configMap:
   name:
 
 # ----------------------------------------------------------------------------
-# APPLICATION CONFIGURATION
-# ElastiCache Redis database connection string and other environment variables are defined here
-# ---------------------------------------------------------
-app:
-  persistence:
-    provider: redis
-    redisUrl: "redis://prod-checkout-redis.m7f8mc.0001.use1.cache.amazonaws.com:6379"
-  endpoints:
-    orders: http://orders #orders service endpoint (ClusterIP service name)
+# DATABASE CONFIGURATION
 # ----------------------------------------------------------------------------
+database:
+  RETAIL_CART_PERSISTENCE_PROVIDER: dynamodb
+  RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME: Items
+  RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE: "false" # Set to "true" to allow the application to create the DynamoDB table if it doesn't exist (not recommended for production)
+  RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT: https://dynamodb.us-west-2.amazonaws.com
+  AWS_REGION: us-west-2
+  AWS_DEFAULT_REGION: us-west-2
+
+app:
+  endpoints:
+    catalog: http://catalog
+    carts: http://carts
+    checkout: http://checkout
+    orders: http://orders
+    
 # AUTOSCALING - HORIZONTAL POD AUTOSCALER (HPA)
 # ----------------------------------------------------------------------------
 autoscaling:

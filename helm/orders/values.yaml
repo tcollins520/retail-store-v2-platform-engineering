@@ -175,17 +175,3 @@ opentelemetry:
 
   exporter:
     endpoint: ""
-
-# ----------------------------------------------------------------------------
-# INGRESS CONFIGURATION
-# ----------------------------------------------------------------------------
-ingress:
-
-  enabled: false
-
-  className: alb
-
-  hostname: shop.tinacloud.dev
-
-  annotations: {}
-  
