@@ -139,7 +139,7 @@ podDisruptionBudget:
 # ----------------------------------------------------------------------------
 podAnnotations:
   prometheus.io/scrape: "true"
-  prometheus.io/port: "8095"
+  prometheus.io/port: "8080"
   prometheus.io/path: "/actuator/prometheus"
 
 
