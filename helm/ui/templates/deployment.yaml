@@ -34,10 +34,6 @@ spec:
 {{ toYaml . | nindent 8 }}
 {{- end }}
 
-{{- if .Values.opentelemetry.enabled }}
-        instrumentation.opentelemetry.io/{{ .Values.opentelemetry.injectAnnotation }}: "{{ .Values.opentelemetry.instrumentation.name }}"
-{{- end }}
-
       labels:
 {{ include "ui.selectorLabels" . | nindent 8 }}
 
@@ -98,6 +94,29 @@ spec:
 
             - configMapRef:
                 name: {{ include "ui.configMapName" . }}
+
+          env:
+
+            - name: OTEL_SDK_DISABLED
+              value: "{{ .Values.opentelemetry.sdk.disabled }}"
+
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.opentelemetry.sdk.endpoint }}"
+
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "{{ .Values.opentelemetry.sdk.protocol }}"
+
+            - name: OTEL_SERVICE_NAME
+              value: "{{ .Values.opentelemetry.sdk.serviceName }}"
+
+            - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+
+            - name: OTEL_METRICS_EXPORTER
+              value: "none"
+
+            - name: OTEL_LOGS_EXPORTER
+              value: "none"
 
           securityContext:
 {{ toYaml .Values.securityContext | nindent 12 }}

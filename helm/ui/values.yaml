@@ -143,10 +143,12 @@ podAnnotations:
 # ----------------------------------------------------------------------------
 opentelemetry:
   enabled: true
-  injectAnnotation: inject-java
 
-  instrumentation:
-    name: observability/retail-auto-instrumentation
+  sdk:
+    disabled: "false"
+    endpoint: http://retail-traces-collector.observability:4318
+    protocol: http/protobuf
+    serviceName: ui
 
 # ----------------------------------------------------------------------------
 # INGRESS CONFIGURATION
