@@ -32,10 +32,6 @@ spec:
     matchLabels:
 {{ include "catalog.selectorLabels" . | nindent 6 }}
 
-  selector:
-    matchLabels:
-{{ include "catalog.selectorLabels" . | nindent 6 }}
-
   template:
 
     metadata:
@@ -46,10 +42,6 @@ spec:
 
 {{- with .Values.podAnnotations }}
 {{ toYaml . | nindent 8 }}
-{{- end }}
-
-{{- if .Values.opentelemetry.enabled }}
-        instrumentation.opentelemetry.io/inject-sdk: {{ .Values.opentelemetry.instrumentation.name }}
 {{- end }}
 
       labels:
@@ -115,6 +107,28 @@ spec:
 
             - secretRef:
                 name: {{ .Values.app.persistence.secret.name }}
+          
+          env:
+            - name: OTEL_SDK_DISABLED
+              value: "{{ ternary "true" "false" .Values.opentelemetry.sdk.disabled }}"
+
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "{{ .Values.opentelemetry.sdk.endpoint }}"
+
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "{{ .Values.opentelemetry.sdk.protocol }}"
+
+            - name: OTEL_SERVICE_NAME
+              value: "{{ .Values.opentelemetry.sdk.serviceName }}"
+
+            - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+
+            - name: OTEL_METRICS_EXPORTER
+              value: "none"
+
+            - name: OTEL_LOGS_EXPORTER
+              value: "none"
           securityContext:
 {{ toYaml .Values.securityContext | nindent 12 }}
 
