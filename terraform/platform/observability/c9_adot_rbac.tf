@@ -1,9 +1,20 @@
+resource "kubernetes_namespace_v1" "observability" {
+  metadata {
+    name = "observability"
+
+    labels = {
+      "app.kubernetes.io/name"    = "observability"
+      "app.kubernetes.io/part-of" = "retail-store-v2"
+    }
+  }
+}
+
 # ADOT Collector RBAC Resources
 # Purpose: Grant OpenTelemetry Collector permissions to scrape metrics from Kubernetes API
 resource "kubernetes_service_account_v1" "adot_collector" {
   metadata {
     name      = "adot-collector"
-    namespace = "default"
+    namespace = "observability"
     labels = {
       "app.kubernetes.io/name"      = "adot-collector"
       "app.kubernetes.io/component" = "opentelemetry-collector"
