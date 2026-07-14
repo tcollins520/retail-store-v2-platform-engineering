@@ -96,7 +96,6 @@ spec:
                 name: {{ include "ui.configMapName" . }}
 
           env:
-
             - name: OTEL_SDK_DISABLED
               value: "{{ .Values.opentelemetry.sdk.disabled }}"
 

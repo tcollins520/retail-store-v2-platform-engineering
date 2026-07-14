@@ -172,12 +172,11 @@ opentelemetry:
 
   sdk:
     disabled: "false"
-
     endpoint: http://retail-traces-collector.observability:4318
     protocol: http/protobuf
-
-    serviceName: orders
 
     tracesExporter: otlp
     metricsExporter: none
     logsExporter: none
+
+    serviceName: orders

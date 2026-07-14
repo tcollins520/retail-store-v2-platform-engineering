@@ -98,7 +98,6 @@ spec:
             - secretRef:
                 name: {{ .Values.app.persistence.secret.name }}
 
-{{- if .Values.opentelemetry.enabled }}
           env:
             - name: OTEL_SDK_DISABLED
               value: {{ .Values.opentelemetry.sdk.disabled | quote }}
@@ -120,7 +119,6 @@ spec:
 
             - name: OTEL_LOGS_EXPORTER
               value: {{ .Values.opentelemetry.sdk.logsExporter | quote }}
-{{- end }}
 
           securityContext:
 {{ toYaml .Values.securityContext | nindent 12 }}
