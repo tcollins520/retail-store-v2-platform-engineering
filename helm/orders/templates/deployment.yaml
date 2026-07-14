@@ -34,10 +34,6 @@ spec:
 {{ toYaml . | nindent 8 }}
 {{- end }}
 
-{{- if .Values.opentelemetry.enabled }}
-        instrumentation.opentelemetry.io/{{ .Values.opentelemetry.injectAnnotation }}: "{{ .Values.opentelemetry.instrumentation.name }}"
-{{- end }}
-
       labels:
 {{ include "orders.selectorLabels" . | nindent 8 }}
 
@@ -101,6 +97,31 @@ spec:
 
             - secretRef:
                 name: {{ .Values.app.persistence.secret.name }}
+
+{{- if .Values.opentelemetry.enabled }}
+          env:
+            - name: OTEL_SDK_DISABLED
+              value: {{ .Values.opentelemetry.sdk.disabled | quote }}
+
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.opentelemetry.sdk.endpoint | quote }}
+
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: {{ .Values.opentelemetry.sdk.protocol | quote }}
+
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Values.opentelemetry.sdk.serviceName | quote }}
+
+            - name: OTEL_TRACES_EXPORTER
+              value: {{ .Values.opentelemetry.sdk.tracesExporter | quote }}
+
+            - name: OTEL_METRICS_EXPORTER
+              value: {{ .Values.opentelemetry.sdk.metricsExporter | quote }}
+
+            - name: OTEL_LOGS_EXPORTER
+              value: {{ .Values.opentelemetry.sdk.logsExporter | quote }}
+{{- end }}
+
           securityContext:
 {{ toYaml .Values.securityContext | nindent 12 }}
 
@@ -143,7 +164,7 @@ spec:
 
             - name: aws-secrets
               mountPath: /mnt/secrets-store
-              readOnly: true  
+              readOnly: true
 
       volumes:
 
