@@ -168,7 +168,7 @@ podAnnotations:
 # OPENTELEMETRY INSTRUMENTATION
 # ----------------------------------------------------------------------------
 opentelemetry:
-  enabled: true
+  enabled: false
   injectAnnotation: inject-java
 
   instrumentation:
