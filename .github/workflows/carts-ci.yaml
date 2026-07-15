@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - applications/carts/**
+      - applications/cart/**
       - .github/workflows/carts-ci.yaml
 
 permissions:
