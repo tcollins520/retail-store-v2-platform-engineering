@@ -11,8 +11,14 @@ spec:
 
   strategy:
     canary:
-      maxSurge: 25%
-      maxUnavailable: 0
+
+      stableService: {{ include "ui.fullname" . }}-stable
+
+      canaryService: {{ include "ui.fullname" . }}-canary
+
+      trafficRouting:
+        alb:
+          ingress: {{ include "ui.fullname" . }}
 
       steps:
         - setWeight: 25
