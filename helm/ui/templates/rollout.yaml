@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 
 metadata:
   name: {{ include "ui.fullname" . }}
@@ -7,16 +7,23 @@ metadata:
 {{ include "ui.labels" . | nindent 4 }}
 
 spec:
-
-{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- end }}
 
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
+    canary:
       maxSurge: 25%
-      maxUnavailable: 25%
+      maxUnavailable: 0
+
+      steps:
+        - setWeight: 25
+        - pause: {}
+
+        - setWeight: 50
+        - pause: {}
+
+        - setWeight: 75
+        - pause:
+            duration: 60s
 
   selector:
     matchLabels:
@@ -42,9 +49,11 @@ spec:
       serviceAccountName: {{ include "ui.serviceAccountName" . }}
 
       terminationGracePeriodSeconds: 30
-
+      
+{{- with .Values.podSecurityContext }}
       securityContext:
-{{ toYaml .Values.podSecurityContext | nindent 8 }}
+{{ toYaml . | nindent 8 }}
+{{- end }}
 
 {{- with .Values.nodeSelector }}
       nodeSelector:
