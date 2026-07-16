@@ -5,6 +5,8 @@
 # ----------------------------------------------------------------------------
 # IMAGE CONFIGURATION
 # ----------------------------------------------------------------------------
+replicaCount: 1
+
 image:
   repository: tcollins520/retail-store-checkout
   pullPolicy: IfNotPresent
@@ -60,8 +62,8 @@ probes:
 # ----------------------------------------------------------------------------
 resources:
   requests:
-    cpu: 256m
-    memory: 512Mi
+    cpu: 100m
+    memory: 256Mi
 
   limits:
     cpu: 512m

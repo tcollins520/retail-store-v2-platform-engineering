@@ -5,7 +5,7 @@
 # ----------------------------------------------------------------------------
 # IMAGE CONFIGURATION
 # ----------------------------------------------------------------------------
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: tcollins520/retail-store-catalog

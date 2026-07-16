@@ -5,7 +5,7 @@
 # ----------------------------------------------------------------------------
 # IMAGE CONFIGURATION
 # ----------------------------------------------------------------------------
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: tcollins520/retail-store-orders
@@ -65,8 +65,8 @@ probes:
 # ----------------------------------------------------------------------------
 resources:
   requests:
-    cpu: 256m
-    memory: 512Mi
+    cpu: 100m
+    memory: 256Mi
 
   limits:
     cpu: 512m
@@ -120,7 +120,7 @@ autoscaling:
   apiVersion: apps/v1
   kind: Deployment
 
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 12
 
   targetCPUUtilizationPercentage: 70

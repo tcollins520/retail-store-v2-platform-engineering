@@ -5,6 +5,8 @@
 # ----------------------------------------------------------------------------
 # IMAGE CONFIGURATION
 # ----------------------------------------------------------------------------
+replicaCount: 1 
+
 image:
   repository: tcollins520/retail-store-cart
   pullPolicy: IfNotPresent
