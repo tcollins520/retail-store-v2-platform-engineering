@@ -92,7 +92,6 @@ jobs:
         run: |
 
           docker build \
-            -t ${{ steps.vars.outputs.image_uri }}:latest \
             -t ${{ steps.vars.outputs.image_uri }}:${{ steps.vars.outputs.sha_tag }} \
             applications/cart
 
@@ -115,7 +114,6 @@ jobs:
       - name: Push Docker Images
         run: |
 
-          docker push ${{ steps.vars.outputs.image_uri }}:latest
           docker push ${{ steps.vars.outputs.image_uri }}:${{ steps.vars.outputs.sha_tag }}
 
 ################################################################################
