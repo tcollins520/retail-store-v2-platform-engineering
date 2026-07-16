@@ -94,17 +94,23 @@ app:
     
 # AUTOSCALING - HORIZONTAL POD AUTOSCALER (HPA)
 # ----------------------------------------------------------------------------
-autoscaling:
-  enabled: true
+ autoscaling:
 
-  apiVersion: apps/v1
-  kind: Deployment
+    enabled: true
 
-  minReplicas: 2
-  maxReplicas: 12
+    apiVersion: apps/v1
+    kind: Deployment
 
-  targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 80
+    minReplicas: 2
+    maxReplicas: 10
+
+    cpu:
+      enabled: true
+      targetUtilization: 70
+
+    memory:
+      enabled: true
+      targetUtilization: 80
 
 # ----------------------------------------------------------------------------
 # KARPENTER NODE SELECTION
@@ -162,26 +168,4 @@ opentelemetry:
     tracesExporter: otlp
     metricsExporter: none
     logsExporter: none
-
     serviceName: carts
-
-# ----------------------------------------------------------------------------
-# AUTOSCALING - HORIZONTAL POD AUTOSCALER (HPA)
-# ----------------------------------------------------------------------------
-  autoscaling:
-
-    enabled: true
-
-    apiVersion: apps/v1
-    kind: Deployment
-
-    minReplicas: 2
-    maxReplicas: 10
-
-    cpu:
-      enabled: true
-      targetUtilization: 70
-
-    memory:
-      enabled: true
-      targetUtilization: 80
