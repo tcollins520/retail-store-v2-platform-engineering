@@ -14,11 +14,6 @@ spec:
 
       activeService: {{ include "ui.fullname" . }}-active
       previewService: {{ include "ui.fullname" . }}-preview
-
-      trafficRouting:
-        alb:
-          ingress: {{ include "ui.fullname" . }}
-          servicePort: {{ .Values.service.port }}
           
       autoPromotionEnabled: false
       previewReplicaCount: 1
